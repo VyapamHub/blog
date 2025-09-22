@@ -3,12 +3,12 @@
    =================================== */
 
 :root {
-    --primary-color: #0056b3; /* A deep blue for action items */
-    --secondary-color: #f7b32b; /* A warm yellow-gold for highlights */
-    --background-color: #f9f9f9; /* Light grey for the page background */
-    --text-color: #333; /* Dark grey for body text */
-    --heading-color: #1a1a1a; /* Almost black for headings */
-    --border-color: #e0e0e0; /* Light grey for borders and separators */
+    --primary-color: #0056b3; 
+    --secondary-color: #f7b32b; 
+    --background-color: #f9f9f9; 
+    --text-color: #333; 
+    --heading-color: #1a1a1a; 
+    --border-color: #e0e0e0; 
     --container-max-width: 1200px;
 }
 
@@ -28,7 +28,7 @@ body {
 .container {
     max-width: var(--container-max-width);
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 1rem; /* Reduced padding for mobile screens */
 }
 
 .btn {
@@ -40,6 +40,7 @@ body {
     transition: background-color 0.3s ease;
     cursor: pointer;
     text-align: center;
+    font-size: 1rem; /* Ensures readability on mobile */
 }
 
 .btn-primary {
@@ -69,26 +70,29 @@ body {
 
 .main-header {
     background-color: #fff;
-    padding: 1.25rem 0;
+    padding: 1rem 0;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .header-container {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column; /* Stack header items vertically on mobile */
     align-items: center;
+    text-align: center;
+    gap: 1rem;
 }
 
 .logo h1 {
     font-family: 'Poppins', sans-serif;
-    font-size: 1.5rem;
+    font-size: 1.25rem; /* Smaller font for mobile */
     color: var(--heading-color);
 }
 
 .main-nav ul {
     list-style: none;
     display: flex;
-    gap: 1.5rem;
+    flex-direction: column; /* Stack menu links vertically */
+    gap: 0.5rem;
     align-items: center;
 }
 
@@ -97,47 +101,37 @@ body {
     color: var(--text-color);
     font-weight: 500;
     position: relative;
+    padding: 0.25rem 0; /* Add padding for easier tapping */
 }
 
 .main-nav a:hover {
     color: var(--primary-color);
 }
 
-/* Mega Menu Styles */
+.nav-cta {
+    margin-top: 0.5rem;
+}
+
+/* Mega Menu is not needed for mobile, but styles are included for larger screens */
 .dropdown-menu {
-    position: relative;
+    position: static; /* Remove dropdown behavior for mobile */
 }
 
 .mega-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: -100px; /* Adjust as needed */
-    width: 500px;
-    background-color: #fff;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-    z-index: 100;
-    border-radius: 8px;
-}
-
-.dropdown-menu:hover .mega-menu {
     display: flex;
-    gap: 2rem;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem 0;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
 }
 
-.mega-menu .menu-column h3 {
-    font-size: 1rem;
-    margin-bottom: 0.75rem;
-    color: var(--primary-color);
-    text-transform: uppercase;
+.mega-menu h3 {
+    text-align: center;
 }
-
-.mega-menu .menu-column a {
-    display: block;
-    padding: 0.5rem 0;
-    white-space: nowrap;
+.mega-menu a {
+    text-align: center;
 }
 
 /* ===================================
@@ -147,7 +141,7 @@ body {
 .hero-section {
     background: url('images/hero-bg.jpg') no-repeat center center/cover;
     color: #fff;
-    padding: 8rem 0;
+    padding: 5rem 0; /* Reduced padding for mobile */
     text-align: center;
     position: relative;
 }
@@ -170,14 +164,14 @@ body {
 
 .hero-text h1 {
     font-family: 'Poppins', sans-serif;
-    font-size: 3rem;
+    font-size: 2rem; /* Reduced font size for mobile */
     line-height: 1.2;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
 }
 
 .hero-text p {
-    font-size: 1.25rem;
-    margin-bottom: 2rem;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
 }
 
 /* ===================================
@@ -185,21 +179,21 @@ body {
    =================================== */
 
 .content-section {
-    padding: 4rem 0;
+    padding: 2.5rem 0; /* Reduced padding for mobile */
 }
 
 .section-title {
     font-family: 'Poppins', sans-serif;
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: var(--heading-color);
     text-align: center;
-    margin-bottom: 2.5rem;
+    margin-bottom: 2rem;
 }
 
 .post-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
+    display: flex;
+    flex-direction: column; /* Stacks cards vertically on mobile */
+    gap: 1.5rem;
 }
 
 .post-card {
@@ -211,22 +205,22 @@ body {
 }
 
 .post-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transform: none; /* Disable hover effect on touch devices */
+    box-shadow: none;
 }
 
 .post-thumbnail {
     width: 100%;
-    height: 200px;
+    height: auto;
     object-fit: cover;
 }
 
 .post-info {
-    padding: 1.5rem;
+    padding: 1rem;
 }
 
 .post-info h3 {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     margin-bottom: 0.5rem;
 }
 
@@ -235,20 +229,16 @@ body {
     color: var(--heading-color);
 }
 
-.post-info h3 a:hover {
-    color: var(--primary-color);
-}
-
 .post-meta {
-    font-size: 0.875rem;
+    font-size: 0.75rem;
     color: #777;
     display: flex;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
 .view-all-button {
     text-align: center;
-    margin-top: 2rem;
+    margin-top: 1.5rem;
 }
 
 /* ===================================
@@ -256,6 +246,7 @@ body {
    =================================== */
 
 .cta-section {
+    padding: 2.5rem 0;
     background-color: var(--primary-color);
     color: #fff;
     text-align: center;
@@ -265,25 +256,26 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
 .cta-text h2 {
     font-family: 'Poppins', sans-serif;
-    font-size: 2rem;
+    font-size: 1.5rem;
     margin-bottom: 0.5rem;
 }
 
 .cta-text p {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
 }
 
 .cta-form {
     display: flex;
-    justify-content: center;
-    gap: 1rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
     width: 100%;
-    max-width: 500px;
+    max-width: 400px;
 }
 
 .cta-form input {
@@ -291,11 +283,7 @@ body {
     padding: 0.75rem 1rem;
     border: none;
     border-radius: 5px;
-    font-size: 1rem;
-}
-
-.cta-form .btn-primary {
-    white-space: nowrap;
+    font-size: 0.9rem;
 }
 
 /* ===================================
@@ -305,13 +293,14 @@ body {
 .main-footer {
     background-color: var(--heading-color);
     color: #fff;
-    padding: 3rem 0;
+    padding: 2rem 0;
 }
 
 .footer-container {
     display: flex;
-    justify-content: space-between;
-    gap: 2rem;
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
 }
 
 .footer-brand {
@@ -320,26 +309,27 @@ body {
 
 .footer-brand .logo-link {
     font-family: 'Poppins', sans-serif;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     color: #fff;
     text-decoration: none;
 }
 
 .tagline {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: #bbb;
-    margin-top: 0.5rem;
+    margin-top: 0.25rem;
 }
 
 .footer-links {
     display: flex;
-    flex: 2;
-    justify-content: space-around;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
 }
 
 .footer-column h3 {
     font-size: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     color: var(--secondary-color);
 }
 
@@ -350,8 +340,7 @@ body {
 .footer-column a {
     color: #fff;
     text-decoration: none;
-    font-size: 0.9rem;
-    line-height: 2;
+    font-size: 0.8rem;
 }
 
 .footer-column a:hover {
@@ -360,59 +349,141 @@ body {
 
 .copyright-bar {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    margin-top: 2rem;
-    padding-top: 1rem;
+    margin-top: 1rem;
+    padding-top: 0.5rem;
     text-align: center;
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     color: #aaa;
 }
 
 /* ===================================
-   7. Responsive Design (Media Queries)
+   7. Responsive Design (Larger Screens)
    =================================== */
 
-@media (max-width: 768px) {
-    .header-container {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
+@media (min-width: 768px) {
+    /* Revert to desktop styles */
+    .container {
+        padding: 0 1.5rem;
     }
 
+    .main-header {
+        padding: 1.25rem 0;
+    }
+
+    .header-container {
+        flex-direction: row;
+        gap: 1.5rem;
+        text-align: left;
+    }
+    
     .main-nav ul {
-        flex-direction: column;
-        gap: 0.5rem;
+        flex-direction: row;
+        gap: 1.5rem;
     }
 
     .nav-cta {
-        margin-top: 1rem;
+        margin-top: 0;
+    }
+
+    /* Mega Menu styles for desktop */
+    .dropdown-menu {
+        position: relative;
+    }
+
+    .mega-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: -100px;
+        width: 500px;
+        background-color: #fff;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        z-index: 100;
+        border-radius: 8px;
+        flex-direction: row;
+        gap: 2rem;
+    }
+
+    .dropdown-menu:hover .mega-menu {
+        display: flex;
+    }
+
+    .mega-menu h3 {
+        text-align: left;
+    }
+
+    .mega-menu a {
+        text-align: left;
+    }
+
+    .hero-section {
+        padding: 8rem 0;
     }
 
     .hero-text h1 {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+
+    .hero-text p {
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    .content-section {
+        padding: 4rem 0;
+    }
+
+    .section-title {
         font-size: 2rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .post-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .post-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .cta-section {
+        padding: 4rem 0;
+    }
+
+    .cta-text h2 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .cta-text p {
+        font-size: 1.1rem;
     }
 
     .cta-form {
-        flex-direction: column;
+        flex-direction: row;
         align-items: center;
-        gap: 0.5rem;
+        gap: 1rem;
     }
 
     .footer-container {
-        flex-direction: column;
-        text-align: center;
+        flex-direction: row;
+        text-align: left;
         gap: 2rem;
     }
 
     .footer-links {
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
+        flex-direction: row;
+        gap: 2rem;
     }
 
-    .mega-menu {
-        position: static;
-        width: 100%;
-        box-shadow: none;
-        border: none;
+    .footer-links {
+        align-items: flex-start;
+        flex-wrap: wrap;
     }
 }
