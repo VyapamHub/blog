@@ -1,0 +1,123 @@
+.test-page-content {
+    background-color: #f7f7f7;
+    padding: 40px 0;
+}
+
+.test-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.test-title {
+    text-align: center;
+    color: #004d40;
+    margin-bottom: 10px;
+    font-size: 2.2em;
+}
+
+.test-meta {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+    font-size: 1.1em;
+}
+
+.question {
+    background-color: #e8f5e9;
+    border: 1px solid #c8e6c9;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+}
+
+.question:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.question p {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+    margin: 0 0 15px 0;
+}
+
+.options-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.options-list li {
+    margin-bottom: 10px;
+}
+
+.options-list label {
+    display: block;
+    cursor: pointer;
+    background-color: #f1f8e9;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #dcedc8;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    color: #555;
+}
+
+.options-list label:hover {
+    background-color: #e6f0d9;
+    transform: translateY(-2px);
+}
+
+.options-list input[type="radio"] {
+    margin-right: 10px;
+}
+
+.submit-btn, .retry-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #fff;
+    background-color: #4caf50;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 30px;
+}
+
+.submit-btn:hover, .retry-btn:hover {
+    background-color: #388e3c;
+}
+
+.hidden {
+    display: none;
+}
+
+#results {
+    text-align: center;
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f1f8e9;
+    border-radius: 10px;
+    border: 2px solid #a5d6a7;
+}
+
+#results h2 {
+    color: #2e7d32;
+}
+
+#score-message {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #1b5e20;
+}
+
+#feedback {
+    margin-top: 15px;
+    color: #424242;
+    font-size: 1.1em;
+}
