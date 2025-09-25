@@ -487,3 +487,15 @@ body {
         flex-wrap: wrap;
     }
 }
+/* सभी इमेजेस के लिए मोबाइल रिस्पॉन्सिवनेस */
+.post-image, .post-thumbnail, .about-image img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.mcq-container img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
