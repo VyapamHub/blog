@@ -3,16 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>संपर्क - CGVyapam Guide</title>
+    <title>धन्यवाद! - CGVyapam Guide</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@500&display=swap" rel="stylesheet">
+    <style>
+        .thank-you-container {
+            text-align: center;
+            padding: 100px 20px;
+        }
+        .thank-you-container h1 {
+            color: #333;
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        .thank-you-container p {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        .thank-you-container .btn-primary {
+            background-color: #007BFF;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
     <header class="main-header">
-        <div class="container header-container">
+	<div class="container header-container">
             <a href="index.html" class="logo">
                 <h1>CGVyapam Guide</h1>
             </a>
@@ -25,34 +49,16 @@
                 </ul>
             </nav>
         </div>
-    </header>
+        </header>
 
-    <section class="post-page-content">
-        <div class="container">
-            <article class="blog-post">
-                <h1 class="post-title">संपर्क करें</h1>
-                <p>क्या आपके कोई प्रश्न, सुझाव हैं, या आप बस नमस्ते कहना चाहते हैं? नीचे दिए गए फॉर्म को भरकर हमसे संपर्क करें।</p>
-                <form class="contact-form" action="https://formspree.io/f/xyznzpnw?_next=https://allinone2025.github.io/CGVyapam_Blog/thank-you.html" method="POST">
-                    <div class="form-group">
-                        <label for="name">आपका नाम</label>
-                        <input type="text" id="name" name="name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">आपका ईमेल</label>
-                        <input type="email" id="email" name="_replyto" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">आपका संदेश</label>
-                        <textarea id="message" name="message" rows="6" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">संदेश भेजें</button>
-                </form>
-            </article>
-        </div>
+    <section class="thank-you-container">
+        <h1>आपका संदेश भेज दिया गया है!</h1>
+        <p>आपसे संपर्क करने के लिए धन्यवाद। हम जल्द ही आपसे संपर्क करेंगे।</p>
+        <a href="index.html" class="btn btn-primary">होमपेज पर वापस जाएँ</a>
     </section>
 
     <footer class="main-footer">
-        <div class="container footer-container">
+	<div class="container footer-container">
             <div class="footer-column">
                 <h3>त्वरित लिंक</h3>
                 <ul>
@@ -82,7 +88,7 @@
                 <p>&copy; 2025 CGVyapam Guide. All Rights Reserved.</p>
             </div>
         </div>
-    </footer>
+        </footer>
     
 </body>
 </html>
