@@ -499,10 +499,16 @@ body {
     height: auto;
     display: block;
 }
-/* MCQ प्रश्नों की संख्या को मोबाइल पर कटने से रोकने के लिए */
-.mcq-container ol {
-    /* बाएँ तरफ की पैडिंग बढ़ाना। 50px पर्याप्त होना चाहिए। */
-    padding-left: 50px; 
-    /* सुनिश्चित करें कि सूची बुलेट/नंबर अंदर ही रहें */
-    list-style-position: outside; 
+/* 1. सुनिश्चित करें कि लिस्ट (ol) को पर्याप्त जगह मिले */
+.post-page-content .mcq-container ol {
+    /* पैडिंग को 60px तक बढ़ाएँ और इसे मजबूत करें */
+    padding-left: 60px !important; 
+    /* सुनिश्चित करें कि संख्या content box के बाहर रहे */
+    list-style-position: outside;
+}
+
+/* 2. यह सुनिश्चित करें कि लिस्ट आइटम (li) भी सही ढंग से प्रदर्शित हों */
+.post-page-content .mcq-container ol li {
+    /* लिस्ट आइटम में कोई अनावश्यक मार्जिन नहीं होना चाहिए */
+    margin-left: 0;
 }
