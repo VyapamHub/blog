@@ -583,3 +583,65 @@ body {
 .btn-affiliate:hover {
     background-color: #e68a00;
 }
+/* Custom Styles for Mock Test Card in index.html */
+
+/* Styles the main card container */
+.post-card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.post-card:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.post-card h2 {
+    color: #006064; /* Teal/Dark Green color for heading */
+    margin-top: 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.8em;
+}
+
+.post-summary {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.post-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+    color: #888;
+    margin-bottom: 15px;
+}
+
+.post-meta .category {
+    background-color: #ffe0b2; /* Light Orange/Amber for category badge */
+    color: #e65100;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+}
+
+.read-more-button {
+    display: inline-block;
+    background-color: #4CAF50; /* Green button color */
+    color: white !important; /* Ensure text is white */
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: 700;
+    transition: background-color 0.3s;
+}
+
+.read-more-button:hover {
+    background-color: #43A047; /* Slightly darker green on hover */
+}
