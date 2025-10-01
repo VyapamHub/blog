@@ -645,3 +645,53 @@ body {
 .read-more-button:hover {
     background-color: #43A047; /* Slightly darker green on hover */
 }
+        /* CSS styles for category-anm.html */
+        .category-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        .category-title {
+            color: #004d40; 
+            border-bottom: 3px solid #004d40;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-family: 'Poppins', sans-serif;
+        }
+        .post-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px dashed #ccc;
+        }
+        .post-list-item:last-child {
+            border-bottom: none;
+        }
+        .post-list-item a {
+            color: #333;
+            font-size: 1.1em;
+            text-decoration: none;
+            transition: color 0.2s;
+            flex-grow: 1;
+        }
+        .post-list-item a:hover {
+            color: #00796b; 
+            text-decoration: underline;
+        }
+        .post-type {
+            font-size: 0.9em;
+            color: #e65100; 
+            font-weight: 700;
+            background-color: #fff3e0;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-left: 10px;
+            flex-shrink: 0;
+        }
+        .post-type.article {
+            color: #006064; 
+            background-color: #e0f7fa;
+        }
+    
