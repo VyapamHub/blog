@@ -167,6 +167,7 @@ const loginForm = document.getElementById('loginForm');
 
 if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
+        console.log("LOGIN ATTEMPT STARTED.");
         e.preventDefault();
         errorMessageDiv.style.display = 'none';
         successMessageDiv.style.display = 'none';
