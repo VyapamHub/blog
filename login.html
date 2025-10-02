@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>यूज़र लॉगिन - CGVyapam Guide</title>
+    
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6906618217933924"
+      crossorigin="anonymous"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MLH7799VZR"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-MLH7799VZR');
+    </script>
+    
+    <link rel="stylesheet" href="css/style.css"> 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Poppins:wght@500&display=swap" rel="stylesheet">
+    
+    </head>
+<body>
+
+    <header class="main-header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <h1>CGVyapam Guide</h1>
+            </a>
+            <nav class="main-nav">
+                <ul class="nav-links">
+                    <li><a href="index.html">होम</a></li>
+                    <li><a href="category-anm.html">ANM / GNM</a></li> 
+                    <li><a href="register.html" class="btn btn-primary">रजिस्टर करें</a></li> 
+                    <li><a href="about.html">हमारे बारे में</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="auth-page">
+        <div class="container auth-container">
+            <h2 class="section-title">अपने अकाउंट में लॉगिन करें</h2>
+            <form id="loginForm" class="auth-form">
+                
+                <div class="form-group">
+                    <label for="email">ईमेल ID</label>
+                    <input type="email" id="email" name="email" required placeholder="अपना पंजीकृत ईमेल ID दर्ज करें">
+                </div>
+                <div class="form-group">
+                    <label for="password">पासवर्ड</label>
+                    <input type="password" id="password" name="password" required placeholder="अपना पासवर्ड दर्ज करें">
+                </div>
+                
+                <button type="submit" class="btn btn-primary">लॉगिन करें</button>
+                
+                <p class="auth-switch-text">
+                    क्या आप नए हैं? <a href="register.html">नया अकाउंट बनाएं</a>
+                </p>
+                
+                <p class="auth-switch-text">
+                    <a href="#" id="forgotPasswordLink">पासवर्ड भूल गए?</a>
+                </p>
+
+                <div id="error-message" class="error-message" style="display: none;"></div>
+                <div id="success-message" class="success-message" style="display: none;"></div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="copyright-bar">
+            <div class="container">
+                <p>&copy; 2025 CGVyapam Guide. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    </body>
+</html>

@@ -694,4 +694,117 @@ body {
             color: #006064; 
             background-color: #e0f7fa;
         }
-    
+    /* --- Authentication Page Styles (for register.html and login.html) --- */
+
+/* 1. Page Container and Centering */
+.auth-page {
+    /* हेडर और फुटर के बीच खाली जगह सुनिश्चित करता है */
+    min-height: calc(100vh - 120px); 
+    padding: 60px 20px;
+    background-color: #f4f7f6; /* हल्की पृष्ठभूमि (Background) */
+}
+
+.auth-container {
+    /* फॉर्म के लिए अधिकतम चौड़ाई सेट करता है */
+    max-width: 450px; 
+    margin: 0 auto;
+    background: #ffffff; /* कार्ड के लिए सफेद पृष्ठभूमि */
+    padding: 30px;
+    border-radius: 8px;
+    /* हल्की छाया (Shadow) देकर फॉर्म को उभारता है */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+}
+
+.auth-page .section-title {
+    text-align: center;
+    /* टाइटल के लिए गहरा रंग */
+    color: var(--primary-color, #004d40); 
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+/* 2. Form Styling and Input Fields */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="tel"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; 
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    /* फोकस होने पर प्राइमरी कलर की बॉर्डर */
+    border-color: var(--primary-color, #00796b); 
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 121, 107, 0.2);
+}
+
+/* 3. Button and Switch Link Styles */
+.auth-form .btn-primary {
+    padding: 12px 20px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-top: 10px;
+    /* सुनिश्चित करें कि यह प्राइमरी बटन स्टाइल को ओवरराइड न करे */
+}
+
+.auth-switch-text {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.auth-switch-text a {
+    color: var(--primary-color, #00796b); 
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.auth-switch-text a:hover {
+    text-decoration: underline;
+}
+
+/* 4. Feedback Messages (Error/Success) */
+.error-message,
+.success-message {
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 15px;
+    text-align: center;
+    font-weight: 500;
+}
+
+.error-message {
+    background-color: #ffebee; /* हल्का लाल */
+    color: #c62828; /* गहरा लाल */
+    border: 1px solid #c62828;
+}
+
+.success-message {
+    background-color: #e8f5e9; /* हल्का हरा */
+    color: #2e7d32; /* गहरा हरा */
+    border: 1px solid #2e7d32;
+}
