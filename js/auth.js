@@ -1,7 +1,6 @@
 // =================================================================
 // 1. FIREBASE CONFIGURATION & INITIALIZATION
 // =================================================================
-// (आपके द्वारा साझा किया गया कॉन्फ़िगरेशन अब यहाँ उपयोग किया जा रहा है)
 const firebaseConfig = {
     apiKey: "AIzaSyBU12pwqkapZydnpVjmhvFUDaunhCRmXVI",
     authDomain: "cgvyapam-guide-auth.firebaseapp.com",
@@ -13,20 +12,21 @@ const firebaseConfig = {
 };
 
 // आवश्यक Firebase लाइब्रेरीज का आयात (Import)
-// नोट: मैंने उन लाइब्रेरी संस्करणों को अपडेट कर दिया है जिनका आप उपयोग कर रहे हैं (12.3.0)
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js';
 import { 
     getAuth, 
     createUserWithEmailAndPassword, 
     signInWithEmailAndPassword,
     updateProfile,
-    onAuthStateChanged, // यूज़र की स्थिति जाँचने के लिए
+    onAuthStateChanged, 
     signOut
 } from 'https://www.gstatic.com/firebasejs/12.3.0/firebase-auth.js';
 import { 
     getFirestore, 
     doc, 
-    setDoc 
+    setDoc,
+    // [IMPORT FIXED] deleteDoc को लाइक हटाने के लिए जोड़ना आवश्यक है
+    deleteDoc
 } from 'https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js';
 
 
@@ -44,22 +44,22 @@ const mainNav = document.querySelector('.main-nav .nav-links'); // हेडर 
 
 // यूज़र के लिए नेविगेशन बार अपडेट करना
 const setupNavbar = (user) => {
+    // पहले मौजूदा auth बटनों को हटा दें (ताकि वे डुप्लीकेट न हों)
+    let existingDashboard = mainNav ? mainNav.querySelector('li a[href="dashboard.html"]') : null;
+    let existingLogout = mainNav ? mainNav.querySelector('li a[id="logout-link"]') : null;
+    let existingLogin = mainNav ? mainNav.querySelector('li a[href="login.html"]') : null;
+    
+    if (existingDashboard) existingDashboard.parentElement.remove();
+    if (existingLogout) existingLogout.parentElement.remove();
+    if (existingLogin) existingLogin.parentElement.remove();
+    
     if (mainNav) {
-        // 'लॉगिन / रजिस्टर' बटन को हटाएँ
-        let authButton = mainNav.querySelector('li a.btn-primary');
-        if (authButton) {
-            authButton.parentElement.remove();
-        }
-
         if (user) {
             // यूज़र लॉगिन है: डैशबोर्ड और लॉगआउट दिखाएँ
-            // सुनिश्चित करें कि यह केवल एक बार जोड़े
-            if (!mainNav.querySelector('li a[href="dashboard.html"]')) {
-                mainNav.innerHTML += `
-                    <li><a href="dashboard.html">डैशबोर्ड</a></li>
-                    <li><a href="#" id="logout-link" class="btn btn-secondary">लॉगआउट</a></li>
-                `;
-            }
+            mainNav.innerHTML += `
+                <li><a href="dashboard.html">डैशबोर्ड</a></li>
+                <li><a href="#" id="logout-link" class="btn btn-secondary">लॉगआउट</a></li>
+            `;
         } else {
             // यूज़र लॉगिन नहीं है: लॉगिन/रजिस्टर दिखाएँ
             mainNav.innerHTML += `
@@ -72,16 +72,29 @@ const setupNavbar = (user) => {
 // =================================================================
 // 2. AUTHENTICATION STATE LISTENER
 // =================================================================
-// हर बार जब यूज़र की लॉगिन स्थिति बदलती है तो यह फ़ंक्शन चलता है
 onAuthStateChanged(auth, (user) => {
     setupNavbar(user); // नेविगेशन बार अपडेट करें
 
     // यदि आप डैशबोर्ड या सुरक्षित पेज पर हैं, तो यहाँ रीडायरेक्ट लॉजिक जोड़ें
-    // उदाहरण के लिए, यदि user null है और आप dashboard.html पर हैं, तो login.html पर भेजें
     const path = window.location.pathname;
-    if (path.includes('dashboard.html') && !user) {
+    const protectedPages = ['dashboard.html', 'anm-mcq-test.html', 'premium-content.html'];
+    
+    const isProtected = protectedPages.some(page => path.includes(page));
+
+    if (isProtected && !user) {
         window.location.href = 'login.html'; 
+        return;
     }
+    
+    // यदि यूज़र लॉगिन है और गलती से login.html/register.html पर है, तो उसे index.html पर भेज दें
+    if ((path.includes('login.html') || path.includes('register.html')) && user) {
+        window.location.href = 'index.html';
+    }
+    
+    // [FIX] onAuthStateChanged के अंदर currentUser को सेट करें
+    // और कमेंट/लाइक को दोबारा लोड करें ताकि UI तुरंत अपडेट हो
+    currentUser = user; 
+    loadLikesAndComments(); // यह सुनिश्चित करता है कि 'Liked!' स्थिति सही हो
 });
 
 
@@ -121,14 +134,11 @@ if (registrationForm) {
         const phone = registrationForm['phone'].value;
 
         try {
-            // 2. नया यूज़र बनाना
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
 
-            // 3. यूज़र का नाम अपडेट करना
             await updateProfile(user, { displayName: fullName });
 
-            // 4. Firestore में अतिरिक्त डेटा स्टोर करना
             await setDoc(doc(db, "users", user.uid), {
                 fullName: fullName,
                 email: email,
@@ -176,7 +186,6 @@ if (loginForm) {
         const password = loginForm['password'].value;
 
         try {
-            // Firebase Authentication का उपयोग करके लॉगिन करना
             await signInWithEmailAndPassword(auth, email, password);
 
             successMessageDiv.textContent = 'लॉगिन सफल! आपको होम पेज पर ले जाया जा रहा है...';
@@ -211,13 +220,10 @@ import {
     getDocs, 
     orderBy, 
     serverTimestamp,
-    runTransaction,
-    increment
+    // [FIXED] deleteDoc का आयात पहले से ही ऊपर किया गया है, runTransaction और increment की यहाँ आवश्यकता नहीं है
 } from 'https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js';
 
 // **महत्वपूर्ण:** हम प्रत्येक पोस्ट को एक unique ID से पहचानते हैं। 
-// चूँकि यह एक उदाहरण पोस्ट है (जैसे anm-mcq-test.html), 
-// हम 'anm-mcq-test' को पोस्ट ID के रूप में उपयोग कर सकते हैं।
 const CURRENT_POST_ID = 'anm-mcq-post-1'; // आपको हर पोस्ट फ़ाइल के लिए इसे बदलना होगा!
 
 const commentsContainer = document.getElementById('commentsContainer');
@@ -229,30 +235,7 @@ const authMessage = document.getElementById('authMessage');
 let currentUser = null; // वर्तमान में लॉगिन यूज़र का डेटा
 let hasUserLiked = false; // क्या यूज़र पहले ही लाइक कर चुका है?
 
-// Firestore Listener से auth.js के शीर्ष पर 'auth' ऑब्जेक्ट उपयोग करें
-
-// यूज़र की लॉगिन स्थिति के आधार पर UI अपडेट करना
-onAuthStateChanged(auth, (user) => {
-    // onAuthStateChanged पहले से ही auth.js के शीर्ष पर चल रहा है, 
-    // इसलिए हम यहाँ केवल UI को नियंत्रित करेंगे
-
-    currentUser = user; 
-    
-    if (commentForm) {
-        if (user) {
-            // लॉगिन है: कमेंट फ़ॉर्म दिखाएँ
-            commentForm.style.display = 'block';
-            authMessage.style.display = 'none';
-        } else {
-            // लॉगिन नहीं है: कमेंट फ़ॉर्म छिपाएँ और लॉगिन संदेश दिखाएँ
-            commentForm.style.display = 'none';
-            authMessage.textContent = 'टिप्पणी करने के लिए कृपया लॉगिन करें।';
-            authMessage.style.display = 'block';
-        }
-    }
-    // लाइक और कमेंट तुरंत लोड करें
-    loadLikesAndComments();
-});
+// [REMOVED] पुरानी onAuthStateChanged कॉल हटा दी गई क्योंकि यह मुख्य लिसनर के अंदर एकीकृत (integrated) है।
 
 // A. कमेंट लोड करना और प्रदर्शित करना
 const loadComments = async () => {
@@ -260,12 +243,11 @@ const loadComments = async () => {
     
     commentsContainer.innerHTML = 'लोड हो रहा है...';
     
-    // Firestore से टिप्पणियाँ प्राप्त करें
     const commentsRef = collection(db, 'comments');
     const q = query(
         commentsRef, 
         where('postId', '==', CURRENT_POST_ID), 
-        orderBy('createdAt', 'desc') // नवीनतम पहले
+        orderBy('createdAt', 'desc') 
     );
     
     const snapshot = await getDocs(q);
@@ -282,7 +264,7 @@ const loadComments = async () => {
         
         commentsHTML += `
             <div class="comment-item">
-                <p class="comment-author"><strong>${data.userName || 'अज्ञात यूज़र'}</strong> • ${date}</p>
+                <p class="comment-author"><strong>${data.userName || 'अज्ञात यूज़र'}</strong> • ${date}</p>
                 <p class="comment-text">${data.content}</p>
             </div>
         `;
@@ -310,14 +292,19 @@ if (commentForm) {
                 await addDoc(collection(db, 'comments'), {
                     postId: CURRENT_POST_ID,
                     userId: currentUser.uid,
-                    userName: currentUser.displayName || 'नया यूज़र',
+                    // [FIX] यूज़र का displayName उपयोग करें
+                    userName: currentUser.displayName || 'नया यूज़र', 
                     content: content,
-                    createdAt: serverTimestamp() // Firebase द्वारा सर्वर का टाइमस्टैम्प
+                    createdAt: serverTimestamp() 
                 });
 
-                commentInput.value = ''; // इनपुट साफ़ करें
-                alert('टिप्पणी सफलतापूर्वक सबमिट हुई!');
-                loadComments(); // टिप्पणियों को पुनः लोड करें
+                commentInput.value = ''; 
+                // [FIX] alert के बजाय सफलता संदेश दिखाएँ
+                authMessage.textContent = 'टिप्पणी सफलतापूर्वक सबमिट हुई!';
+                authMessage.style.display = 'block';
+                setTimeout(() => authMessage.style.display = 'none', 3000);
+                
+                loadComments(); 
                 
             } catch (error) {
                 console.error("कमेंट सबमिट करने में विफल:", error);
@@ -346,15 +333,23 @@ const loadLikesAndComments = async () => {
         hasUserLiked = false;
         if (currentUser) {
             const userLike = snapshot.docs.find(doc => doc.data().userId === currentUser.uid);
+            
+            // [FIX] Like Status UI अपडेट करें
             if (userLike) {
                 hasUserLiked = true;
-                likeBtn.classList.add('liked'); // CSS से लाइक को हाईलाइट करें
+                likeBtn.classList.add('liked'); 
                 likeBtn.textContent = '✔️ Liked!';
             } else {
+                 hasUserLiked = false; // यदि यूज़र लॉग इन है लेकिन लाइक नहीं किया है
                  likeBtn.classList.remove('liked');
                  likeBtn.textContent = '👍 लाइक';
             }
+        } else {
+             // [FIX] यूज़र लॉगआउट है तो 'Liked' स्थिति साफ़ करें
+             likeBtn.classList.remove('liked');
+             likeBtn.textContent = '👍 लाइक';
         }
+
 
     } catch (error) {
         console.error("लाइक लोड करने में विफल:", error);
@@ -379,9 +374,9 @@ if (likeBtn) {
                 const snapshot = await getDocs(q);
                 
                 if (!snapshot.empty) {
-                    // डिलीट करने के लिए transaction का उपयोग करें
-                    await deleteDoc(doc(db, 'likes', snapshot.docs[0].id));
-                    alert('Like हटा दिया गया।');
+                    // [FIXED] deleteDoc का उपयोग
+                    await deleteDoc(doc(db, 'likes', snapshot.docs[0].id)); 
+                    // alert('Like हटा दिया गया।');
                 }
             } catch (error) {
                  console.error("Unlike विफल:", error);
@@ -396,7 +391,7 @@ if (likeBtn) {
                     userId: currentUser.uid,
                     createdAt: serverTimestamp()
                 });
-                alert('पोस्ट पसंद आया!');
+                // alert('पोस्ट पसंद आया!');
             } catch (error) {
                 console.error("Like विफल:", error);
                 alert('Like जोड़ने में विफल रहा।');
