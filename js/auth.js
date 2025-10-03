@@ -209,7 +209,7 @@ if (loginForm) {
     });
 }
 // =================================================================
-// 6. COMMENT & LIKE LOGIC
+// 6. COMMENT & LIKE LOGIC (MODIFIED WITH LOAD LISTENER)
 // =================================================================
 
 import { 
@@ -220,184 +220,187 @@ import {
     getDocs, 
     orderBy, 
     serverTimestamp,
-    // [FIXED] deleteDoc का आयात पहले से ही ऊपर किया गया है, runTransaction और increment की यहाँ आवश्यकता नहीं है
+    // deleteDoc अब ऊपर 1. सेक्शन में आयातित है।
 } from 'https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js';
 
-// **महत्वपूर्ण:** हम प्रत्येक पोस्ट को एक unique ID से पहचानते हैं। 
-const CURRENT_POST_ID = 'anm-mcq-post-1'; // आपको हर पोस्ट फ़ाइल के लिए इसे बदलना होगा!
+// **हम इस पूरे सेक्शन को window.onload के अंदर लपेटते हैं ताकि HTML एलिमेंट्स मौजूद हों**
+window.addEventListener('load', () => {
 
-const commentsContainer = document.getElementById('commentsContainer');
-const commentForm = document.getElementById('commentForm');
-const likeBtn = document.getElementById('likeBtn');
-const likeCountSpan = document.getElementById('likeCount');
-const authMessage = document.getElementById('authMessage');
+    // ⚠️ महत्वपूर्ण: CURRENT_POST_ID को अपनी हर HTML फ़ाइल के लिए बदलें!
+    // यदि आप इस फ़ाइल (auth.js) का उपयोग कर रहे हैं, तो इसे खाली छोड़ दें या इसे किसी विशिष्ट मान पर सेट करें, 
+    // और फिर इसे अपनी प्रत्येक HTML फ़ाइल में ओवरराइड करें।
+    const CURRENT_POST_ID = 'anm-mcq-test-01'; 
 
-let currentUser = null; // वर्तमान में लॉगिन यूज़र का डेटा
-let hasUserLiked = false; // क्या यूज़र पहले ही लाइक कर चुका है?
+    const commentsContainer = document.getElementById('commentsContainer');
+    const commentForm = document.getElementById('commentForm');
+    const likeBtn = document.getElementById('likeBtn');
+    const likeCountSpan = document.getElementById('likeCount');
+    const authMessage = document.getElementById('authMessage');
 
-// [REMOVED] पुरानी onAuthStateChanged कॉल हटा दी गई क्योंकि यह मुख्य लिसनर के अंदर एकीकृत (integrated) है।
-
-// A. कमेंट लोड करना और प्रदर्शित करना
-const loadComments = async () => {
-    if (!commentsContainer) return;
-    
-    commentsContainer.innerHTML = 'लोड हो रहा है...';
-    
-    const commentsRef = collection(db, 'comments');
-    const q = query(
-        commentsRef, 
-        where('postId', '==', CURRENT_POST_ID), 
-        orderBy('createdAt', 'desc') 
-    );
-    
-    const snapshot = await getDocs(q);
-    
-    if (snapshot.empty) {
-        commentsContainer.innerHTML = '<p>कोई टिप्पणी नहीं मिली। पहली टिप्पणी करने वाले बनें!</p>';
-        return;
+    // यदि कमेंट या लाइक के तत्व पेज पर नहीं हैं, तो यह फ़ंक्शन चुपचाप बाहर निकल जाएगा।
+    if (!commentForm && !likeBtn) {
+        return; 
     }
 
-    let commentsHTML = '';
-    snapshot.forEach(doc => {
-        const data = doc.data();
-        const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('hi-IN') : 'हाल ही में';
+    // A. कमेंट लोड करना और प्रदर्शित करना
+    const loadComments = async () => {
+        if (!commentsContainer) return;
         
-        commentsHTML += `
-            <div class="comment-item">
-                <p class="comment-author"><strong>${data.userName || 'अज्ञात यूज़र'}</strong> • ${date}</p>
-                <p class="comment-text">${data.content}</p>
-            </div>
-        `;
-    });
-    
-    commentsContainer.innerHTML = commentsHTML;
-};
-
-
-// B. कमेंट सबमिट करना
-if (commentForm) {
-    commentForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+        commentsContainer.innerHTML = 'लोड हो रहा है...';
         
-        if (!currentUser) {
-            alert('टिप्पणी करने के लिए आपको लॉगिन करना होगा।');
-            return;
-        }
-
-        const commentInput = document.getElementById('commentInput');
-        const content = commentInput.value.trim();
-
-        if (content.length > 0) {
-            try {
-                await addDoc(collection(db, 'comments'), {
-                    postId: CURRENT_POST_ID,
-                    userId: currentUser.uid,
-                    // [FIX] यूज़र का displayName उपयोग करें
-                    userName: currentUser.displayName || 'नया यूज़र', 
-                    content: content,
-                    createdAt: serverTimestamp() 
-                });
-
-                commentInput.value = ''; 
-                // [FIX] alert के बजाय सफलता संदेश दिखाएँ
-                authMessage.textContent = 'टिप्पणी सफलतापूर्वक सबमिट हुई!';
-                authMessage.style.display = 'block';
-                setTimeout(() => authMessage.style.display = 'none', 3000);
-                
-                loadComments(); 
-                
-            } catch (error) {
-                console.error("कमेंट सबमिट करने में विफल:", error);
-                alert("टिप्पणी सबमिट नहीं हो पाई।");
-            }
-        }
-    });
-}
-
-
-// C. लाइक/वोटिंग लॉजिक
-const loadLikesAndComments = async () => {
-    loadComments();
-    if (!likeCountSpan) return;
-
-    // 1. कुल लाइक लोड करना
-    try {
-        const likesRef = collection(db, 'likes');
-        const q = query(likesRef, where('postId', '==', CURRENT_POST_ID));
-        const snapshot = await getDocs(q);
+        const commentsRef = collection(db, 'comments');
+        const q = query(
+            commentsRef, 
+            where('postId', '==', CURRENT_POST_ID), 
+            orderBy('createdAt', 'desc') 
+        );
         
-        const totalLikes = snapshot.docs.length;
-        likeCountSpan.textContent = `${totalLikes} Likes`;
-
-        // 2. यूज़र का लाइक स्टेटस चेक करना
-        hasUserLiked = false;
-        if (currentUser) {
-            const userLike = snapshot.docs.find(doc => doc.data().userId === currentUser.uid);
+        try {
+            const snapshot = await getDocs(q);
             
-            // [FIX] Like Status UI अपडेट करें
-            if (userLike) {
-                hasUserLiked = true;
-                likeBtn.classList.add('liked'); 
-                likeBtn.textContent = '✔️ Liked!';
+            if (snapshot.empty) {
+                commentsContainer.innerHTML = '<p>कोई टिप्पणी नहीं मिली। पहली टिप्पणी करने वाले बनें!</p>';
+                return;
+            }
+
+            let commentsHTML = '';
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('hi-IN') : 'हाल ही में';
+                
+                commentsHTML += `
+                    <div class="comment-item">
+                        <p class="comment-author"><strong>${data.userName || 'अज्ञात यूज़र'}</strong> • ${date}</p>
+                        <p class="comment-text">${data.content}</p>
+                    </div>
+                `;
+            });
+            commentsContainer.innerHTML = commentsHTML;
+        } catch (error) {
+            console.error("कमेंट लोड करने में विफल:", error);
+            commentsContainer.innerHTML = '<p>टिप्पणियाँ लोड नहीं हो सकीं।</p>';
+        }
+    };
+
+
+    // B. कमेंट सबमिट करना
+    if (commentForm) { // यह जाँच अब अनावश्यक है क्योंकि हम window.load में हैं, लेकिन सुरक्षा के लिए ठीक है
+        commentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log("COMMENT EVENT HANDLER TRIGGERED."); // <-- अब यह कंसोल में दिखना चाहिए!
+            
+            if (!currentUser) {
+                alert('टिप्पणी करने के लिए आपको लॉगिन करना होगा।');
+                return;
+            }
+
+            const commentInput = document.getElementById('commentInput');
+            const content = commentInput.value.trim();
+
+            if (content.length > 0) {
+                try {
+                    await addDoc(collection(db, 'comments'), {
+                        postId: CURRENT_POST_ID,
+                        userId: currentUser.uid,
+                        userName: currentUser.displayName || 'नया यूज़र', 
+                        content: content,
+                        createdAt: serverTimestamp() 
+                    });
+
+                    commentInput.value = ''; 
+                    authMessage.textContent = 'टिप्पणी सफलतापूर्वक सबमिट हुई!';
+                    authMessage.style.display = 'block';
+                    setTimeout(() => authMessage.style.display = 'none', 3000);
+                    
+                    loadComments(); 
+                    
+                } catch (error) {
+                    console.error("कमेंट सबमिट करने में विफल:", error);
+                    alert("टिप्पणी सबमिट नहीं हो पाई। (संभवतः सुरक्षा नियम)");
+                }
+            }
+        });
+    }
+
+
+    // C. लाइक/वोटिंग लॉजिक
+    const loadLikesAndComments = async () => {
+        loadComments();
+        if (!likeCountSpan || !likeBtn) return; // सुनिश्चित करें कि लाइक तत्व मौजूद हैं
+
+        // 1. कुल लाइक लोड करना
+        try {
+            const likesRef = collection(db, 'likes');
+            const q = query(likesRef, where('postId', '==', CURRENT_POST_ID));
+            const snapshot = await getDocs(q);
+            
+            const totalLikes = snapshot.docs.length;
+            likeCountSpan.textContent = `${totalLikes} Likes`;
+
+            // 2. यूज़र का लाइक स्टेटस चेक करना
+            hasUserLiked = false;
+            if (currentUser) {
+                const userLike = snapshot.docs.find(doc => doc.data().userId === currentUser.uid);
+                
+                if (userLike) {
+                    hasUserLiked = true;
+                    likeBtn.classList.add('liked'); 
+                    likeBtn.textContent = '✔️ Liked!';
+                } else {
+                     hasUserLiked = false; 
+                     likeBtn.classList.remove('liked');
+                     likeBtn.textContent = '👍 लाइक';
+                }
             } else {
-                 hasUserLiked = false; // यदि यूज़र लॉग इन है लेकिन लाइक नहीं किया है
                  likeBtn.classList.remove('liked');
                  likeBtn.textContent = '👍 लाइक';
             }
-        } else {
-             // [FIX] यूज़र लॉगआउट है तो 'Liked' स्थिति साफ़ करें
-             likeBtn.classList.remove('liked');
-             likeBtn.textContent = '👍 लाइक';
+
+        } catch (error) {
+            console.error("लाइक लोड करने में विफल:", error);
+            likeCountSpan.textContent = '0 Likes (त्रुटि)';
         }
+    };
 
+    // D. लाइक बटन पर क्लिक करें
+    if (likeBtn) {
+        likeBtn.addEventListener('click', async () => {
+            if (!currentUser) {
+                alert('लाइक करने के लिए कृपया लॉगिन करें।');
+                return;
+            }
 
-    } catch (error) {
-        console.error("लाइक लोड करने में विफल:", error);
-        likeCountSpan.textContent = '0 Likes (त्रुटि)';
-    }
-};
-
-// D. लाइक बटन पर क्लिक करें
-if (likeBtn) {
-    likeBtn.addEventListener('click', async () => {
-        if (!currentUser) {
-            alert('लाइक करने के लिए कृपया लॉगिन करें।');
-            return;
-        }
-
-        const likesRef = collection(db, 'likes');
-        
-        if (hasUserLiked) {
-            // unlike: यूज़र का मौजूदा लाइक हटाएँ
-            try {
-                const q = query(likesRef, where('postId', '==', CURRENT_POST_ID), where('userId', '==', currentUser.uid));
-                const snapshot = await getDocs(q);
-                
-                if (!snapshot.empty) {
-                    // [FIXED] deleteDoc का उपयोग
-                    await deleteDoc(doc(db, 'likes', snapshot.docs[0].id)); 
-                    // alert('Like हटा दिया गया।');
+            const likesRef = collection(db, 'likes');
+            
+            if (hasUserLiked) {
+                // unlike: यूज़र का मौजूदा लाइक हटाएँ
+                try {
+                    const q = query(likesRef, where('postId', '==', CURRENT_POST_ID), where('userId', '==', currentUser.uid));
+                    const snapshot = await getDocs(q);
+                    
+                    if (!snapshot.empty) {
+                        await deleteDoc(doc(db, 'likes', snapshot.docs[0].id)); 
+                    }
+                } catch (error) {
+                     console.error("Unlike विफल:", error);
+                     alert('Like हटाने में विफल रहा।');
                 }
-            } catch (error) {
-                 console.error("Unlike विफल:", error);
-                 alert('Like हटाने में विफल रहा।');
-            }
 
-        } else {
-            // like: नया लाइक जोड़ें
-            try {
-                await addDoc(likesRef, {
-                    postId: CURRENT_POST_ID,
-                    userId: currentUser.uid,
-                    createdAt: serverTimestamp()
-                });
-                // alert('पोस्ट पसंद आया!');
-            } catch (error) {
-                console.error("Like विफल:", error);
-                alert('Like जोड़ने में विफल रहा।');
+            } else {
+                // like: नया लाइक जोड़ें
+                try {
+                    await addDoc(likesRef, {
+                        postId: CURRENT_POST_ID,
+                        userId: currentUser.uid,
+                        createdAt: serverTimestamp()
+                    });
+                } catch (error) {
+                    console.error("Like विफल:", error);
+                    alert('Like जोड़ने में विफल रहा।');
+                }
             }
-        }
-        // UI और काउंट अपडेट करें
-        loadLikesAndComments(); 
-    });
-}
+            // UI और काउंट अपडेट करें
+            loadLikesAndComments(); 
+        });
+    }
+}); // <<< window.addEventListener('load', ...) का समापन

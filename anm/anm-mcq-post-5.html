@@ -637,7 +637,32 @@
             </article>
         </div>
     </section>
+<section class="post-engagement container">
 
+    <div class="like-section">
+        <h3 class="section-subtitle">इस पोस्ट को रेट करें</h3>
+        <button id="likeBtn" class="btn btn-secondary">
+            👍 लाइक
+        </button>
+        <span id="likeCount" class="like-count">0 Likes</span>
+    </div>
+
+    <div class="comment-section">
+        <h3 class="section-subtitle">टिप्पणियाँ दें</h3>
+
+        <form id="commentForm" class="comment-form" style="display: none;">
+            <div class="form-group">
+                <textarea id="commentInput" rows="4" required placeholder="यहाँ अपनी टिप्पणी लिखें..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">टिप्पणी सबमिट करें</button>
+            <p id="authMessage" class="error-message" style="display: none;"></p>
+        </form>
+        
+        <div id="commentsContainer" class="comments-container">
+            <p>कोई टिप्पणी नहीं मिली। पहली टिप्पणी करने वाले बनें!</p>
+        </div>
+    </div>
+</section>
     <footer class="main-footer">
         <div class="container footer-container">
             <div class="footer-column">
