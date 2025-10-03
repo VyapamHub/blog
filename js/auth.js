@@ -218,7 +218,7 @@ import {
 // **महत्वपूर्ण:** हम प्रत्येक पोस्ट को एक unique ID से पहचानते हैं। 
 // चूँकि यह एक उदाहरण पोस्ट है (जैसे anm-mcq-test.html), 
 // हम 'anm-mcq-test' को पोस्ट ID के रूप में उपयोग कर सकते हैं।
-const CURRENT_POST_ID = 'anm-mcq-test-01'; // आपको हर पोस्ट फ़ाइल के लिए इसे बदलना होगा!
+const CURRENT_POST_ID = 'anm-mcq-post-1'; // आपको हर पोस्ट फ़ाइल के लिए इसे बदलना होगा!
 
 const commentsContainer = document.getElementById('commentsContainer');
 const commentForm = document.getElementById('commentForm');
